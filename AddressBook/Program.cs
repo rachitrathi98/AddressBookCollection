@@ -199,6 +199,7 @@ namespace AddressBook
 
                     default:
                         Console.WriteLine("Please enter a valid choice");
+                        Console.WriteLine("HelloWorld");
                         break;
                 }
             }
