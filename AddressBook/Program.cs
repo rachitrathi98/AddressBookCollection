@@ -54,7 +54,7 @@ namespace AddressBook
                 Console.WriteLine("3. Edit the contact");
                 Console.WriteLine("4. Delete a contact");
                 Console.WriteLine("5. Enter the city to display contacts living in it");
-                Console.WriteLine("6. Diaply contacts city wise");
+                Console.WriteLine("6. Display contacts city wise");
                 Console.WriteLine("7. Exit");
                 choice_one = Convert.ToInt32(Console.ReadLine());
 
@@ -221,7 +221,7 @@ namespace AddressBook
                         }
                         break;
                     case 6: Console.WriteLine("Displaying contacts city wise");//Display State wise contacts
-                            Dictionary<string, List<string>> sT = new Dictionary<string, List<string>>();
+                            Dictionary<string, int> sT = new Dictionary<string, int>();
                             HashSet<string> states = new HashSet<string>();
                             foreach (Contact p in clist)
                             {
@@ -237,17 +237,12 @@ namespace AddressBook
                                         temp.Add(c.getFname() +" "+c.getLname());
                                     }
                                 }
-                                sT.Add(s, temp);
+                                int count=temp.Count;
+                                sT.Add(s, count);
                             }
-                            foreach (var contents in sT.Keys)
+                            foreach (KeyValuePair<string, int> kv in sT)
                             {
-                                Console.WriteLine("State: "+contents);
-                                 Console.WriteLine("Contacts are...");
-
-                               foreach (var listMember in sT[contents])
-                                {
-                                    Console.WriteLine(" member :" + listMember);
-                                }
+                                    Console.WriteLine("The number of persons in {0} is {1} ", kv.Key,kv.Value);  
                             }
                             break;
                            
