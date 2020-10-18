@@ -54,7 +54,7 @@ namespace AddressBook
                 Console.WriteLine("3. Edit the contact");
                 Console.WriteLine("4. Delete a contact");
                 Console.WriteLine("5. Enter the city to display contacts living in it");
-                Console.WriteLine("6. Diaply contacts city wise");
+                Console.WriteLine("6. Display contacts city wise");
                 Console.WriteLine("7. Exit");
                 choice_one = Convert.ToInt32(Console.ReadLine());
 
