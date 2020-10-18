@@ -53,7 +53,8 @@ namespace AddressBook
                 Console.WriteLine("2. Display contacts");
                 Console.WriteLine("3. Edit the contact");
                 Console.WriteLine("4. Delete a contact");
-                Console.WriteLine("5. Exit");
+                Console.WriteLine("5. Display a contact by city");
+                Console.WriteLine("6. Exit");
                 choice_one = Convert.ToInt32(Console.ReadLine());
 
                 switch (choice_one)
@@ -206,8 +207,18 @@ namespace AddressBook
                             Console.WriteLine("Contacts deleted");
                         }
                         break;
-
-                    case 5:
+                    case 5: Console.WriteLine("Enter the city for displaying contacts");
+                            string citi;
+                            citi = Console.ReadLine();
+                            foreach (Contact c in clist)
+                            {
+                            if (c.getCity().ToLower().Equals(citi.ToLower()))
+                            {
+                                Console.WriteLine(c.getFname()+" "+c.getLname());
+                            }
+                            }
+                            break;
+                    case 6:
                         Console.WriteLine("Exiting....");
                         break;
 
