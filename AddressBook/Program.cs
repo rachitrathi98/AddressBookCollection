@@ -68,10 +68,23 @@ namespace AddressBook
                         fname = Console.ReadLine();
                         Console.WriteLine("Enter the last name");
                         lname = Console.ReadLine();
+                        Console.WriteLine("Enter the address");
+                        address = Console.ReadLine();
+                        Console.WriteLine("Enter the city");
+                        city = Console.ReadLine();
+                        Console.WriteLine("Enter the state");
+                        state = Console.ReadLine();
+                        Console.WriteLine("Enter the zip code");
+                        zip = Convert.ToInt64(Console.ReadLine());
+                        Console.WriteLine("Enter the phone number");
+                        phoneNumber = Convert.ToInt64(Console.ReadLine());
+                        Console.WriteLine("Enter the EmailId");
+                        email = Console.ReadLine();
+                        Contact contact = new Contact(fname, lname, address, city, state, zip, phoneNumber, email);
                         int flags= 0;
                         foreach (Contact ct in clist)
                         {
-                            if (ct.getFname().ToLower().Equals(fname.ToLower()) && ct.getLname().ToLower().Equals(lname.ToLower()))
+                            if (ct.Equals(contact))
                             {
                                 Console.WriteLine("Entry of this name is already present. Please enter a new Name");
                                 flags = 1;
@@ -80,21 +93,9 @@ namespace AddressBook
                         }
                         if (flags == 0)
                         {
-                            Console.WriteLine("Enter the address");
-                            address = Console.ReadLine();
-                            Console.WriteLine("Enter the city");
-                            city = Console.ReadLine();
-                            Console.WriteLine("Enter the state");
-                            state = Console.ReadLine();
-                            Console.WriteLine("Enter the zip code");
-                            zip = Convert.ToInt64(Console.ReadLine());
-                            Console.WriteLine("Enter the phone number");
-                            phoneNumber = Convert.ToInt64(Console.ReadLine());
-                            Console.WriteLine("Enter the EmailId");
-                            email = Console.ReadLine();
-                            Contact contact = new Contact(fname, lname, address, city, state, zip, phoneNumber, email);
-                            Console.WriteLine("Contact Added Successfully");
+                           
                             clist.Add(contact);//Add new contact obj to the list passed in the method
+                            Console.WriteLine("Contact Added Successfully");
                         }
                         break;
 

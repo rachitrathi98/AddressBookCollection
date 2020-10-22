@@ -47,7 +47,7 @@ namespace AddressBook
         }
         public void setAdd(string address)
         {
-            this.address =address;
+            this.address = address;
         }
         public string getAdd()
         {
@@ -97,8 +97,20 @@ namespace AddressBook
 
         public string toString()
         {
-            return this.fname+" "+this.lname+" "+this.state;   
+            return this.fname + " " + this.lname + " " + this.state;
         }
-
+        public override bool Equals(Object obj)
+        {
+            //Check for null and compare run-time types.
+            if ((obj == null) || !this.GetType().Equals(obj.GetType()))
+            {
+                return false;
+            }
+            else
+            {
+                Contact p = (Contact)obj;
+                return (fname == p.fname) && (lname == p.lname);
+            }
+        }
     }
 }
