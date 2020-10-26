@@ -1,22 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
+using System.Security.Authentication;
 
 namespace AddressBook
 {
     class Program
     {
-
+        public static string filePath = @"C:\Users\rathi\source\repos_two\AddressBook\AddressBook\AddressBook.txt";
         static void Main(string[] args)
         {
             Program p = new Program();
             int ch = 0; string bname, bname_o;
             Dictionary<string, List<Contact>> dict = new Dictionary<string, List<Contact>>();// To store new address book with name as Key and value as list
-            while (ch != 3)
+            while (ch != 5)
             {
                 Console.WriteLine("1. Add a new Address Book");
                 Console.WriteLine("2. Add, edit or delete contacts in an exisiting address Book");
+                Console.WriteLine("3. Write contacts to a file");
+                Console.WriteLine("4. Read contacts from a file");
+
                 ch = Convert.ToInt32(Console.ReadLine());
                 if (ch == 1)//To create new Book
                 {
@@ -41,13 +46,58 @@ namespace AddressBook
                     }
 
                 }
+                if (ch == 3)
+                {
+                    Console.WriteLine("Writing Contacts to file");
+                    if (File.Exists(filePath))
+                    {
+                        using (StreamWriter stw = File.CreateText(filePath))
+                        {
+                            foreach (KeyValuePair<String, List<Contact>> kv in dict)
+                            {
+                                string a = kv.Key;
+                                List<Contact> list1 = (List<Contact>)kv.Value;
+                                stw.WriteLine("Address Book Name: " + a);
+                                foreach (Contact c in list1)
+                                {
+                                    stw.WriteLine(c);
+                                }
+                            }
+                            Console.WriteLine("Address Book written into the file successfully!!!");
+                        }
+                    }
+
+                    else
+                    {
+                        Console.WriteLine("File doesn't exist!!!");
+                    }
+                }
+                if (ch == 4)
+                {
+                    Console.WriteLine("Reading contacts from a file");
+                    if (File.Exists(filePath))
+                    {
+                        using (StreamReader str = File.OpenText(filePath))
+                        {
+                            string s = "";
+                            while ((s = str.ReadLine()) != null)
+                            {
+                                Console.WriteLine(s);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("File doesn't exist!!!");
+                    }
+                }
 
             }
         }
         public void addContact(List<Contact> clist) //To add to exisiting book
         {
             int choice_one = 0;
-            while (choice_one != 5)//Iterate till the user exits by inputting choice 5
+            while (choice_one != 10)//Iterate till the user exits by inputting choice 5
             {
                 Console.WriteLine("Enter your choice");
                 Console.WriteLine("1. Enter the contact");
@@ -56,7 +106,7 @@ namespace AddressBook
                 Console.WriteLine("4. Delete a contact");
                 Console.WriteLine("5. Enter the city to display contacts living in it");
                 Console.WriteLine("6. Display contacts city wise");
-                Console.WriteLine("7. Display contacts city wise");
+                Console.WriteLine("7. Display sorted contacts city wise");
                 Console.WriteLine("8. Display sorted contacts state wise");
                 Console.WriteLine("9. Display sorted contacts zip wise");
                 Console.WriteLine("10. Exit");
@@ -279,6 +329,7 @@ namespace AddressBook
                             }
                             break;
 
+                  
                     case 10:
                         Console.WriteLine("Exiting....");
                         break;
