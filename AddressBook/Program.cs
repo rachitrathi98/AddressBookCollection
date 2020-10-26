@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Versioning;
 
 namespace AddressBook
@@ -99,12 +100,15 @@ namespace AddressBook
                         }
                         break;
 
-                    case 2: //To display all contacts
-                        foreach (Contact o in clist)
+                    case 2: //To display all contacts sorted by person's name
+                        var sortedList = clist.OrderBy(si => si.getFname()).ToList();
+                        foreach (Contact o in sortedList)
                         {
                             Console.WriteLine(o.toString());
                         }
+
                         break;//Print the contacts
+                        
 
                     case 3:
                         Console.WriteLine("Enter the name of the contact to edit");//To edit the contact in the list
