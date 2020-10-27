@@ -1,21 +1,35 @@
-﻿using System;
+﻿using ChoETL;
+using CsvHelper;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Runtime.Versioning;
+using System.Security.Authentication;
 
 namespace AddressBook
 {
     class Program
     {
-
+        public static string filePath = @"C:\Users\rathi\source\repos_two\AddressBook\AddressBook\AddressBook.txt";
         static void Main(string[] args)
         {
             Program p = new Program();
             int ch = 0; string bname, bname_o;
             Dictionary<string, List<Contact>> dict = new Dictionary<string, List<Contact>>();// To store new address book with name as Key and value as list
-            while (ch != 3)
+            while (ch != 7)
             {
                 Console.WriteLine("1. Add a new Address Book");
                 Console.WriteLine("2. Add, edit or delete contacts in an exisiting address Book");
+                Console.WriteLine("3. Write contacts to a file");
+                Console.WriteLine("4. Read contacts from a file");
+                Console.WriteLine("5. Write contacts to CSV file");
+                Console.WriteLine("6. Read contacts from a CSV file");
+                Console.WriteLine("7. Write contacts to a JSON File");
+                Console.WriteLine("8. Read contacts from a JSON file");
+
                 ch = Convert.ToInt32(Console.ReadLine());
                 if (ch == 1)//To create new Book
                 {
@@ -40,13 +54,208 @@ namespace AddressBook
                     }
 
                 }
+                if (ch == 3)//TO write contacts into a txt file
+                {
+                    Console.WriteLine("Writing Contacts to file");
+                    if (File.Exists(filePath))
+                    {
+                        using (StreamWriter stw = File.CreateText(filePath))
+                        {
+                            foreach (KeyValuePair<String, List<Contact>> kv in dict)
+                            {
+                                string a = kv.Key;
+                                List<Contact> list1 = (List<Contact>)kv.Value;
+                                stw.WriteLine("Address Book Name: " + a);
+                                foreach (Contact c in list1)
+                                {
+                                    stw.WriteLine(c);
+                                }
+                            }
+                            Console.WriteLine("Address Book written into the file successfully!!!");
+                        }
+                    }
+
+                    else
+                    {
+                        Console.WriteLine("File doesn't exist!!!");
+                    }
+                }
+                if (ch == 4)//Reading contacts from the txt file
+                {
+                    Console.WriteLine("Reading contacts from a file");
+                    if (File.Exists(filePath))
+                    {
+                        using (StreamReader str = File.OpenText(filePath))
+                        {
+                            string s = "";
+                            while ((s = str.ReadLine()) != null)
+                            {
+                                Console.WriteLine(s);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("File doesn't exist!!!");
+                    }
+                }
+                if (ch == 5)//Write Contacts from a specified addressbook into a CSV File
+                {
+                    Console.WriteLine("Enter the Address Book Name which needs to be written");
+                    string name = Console.ReadLine();
+                    if (dict.ContainsKey(name))
+                    {
+                        WriteIntoCSVFile(dict, name);
+                        Console.WriteLine("Data inserted successfully");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Book Name Not Found");
+                    }
+                }
+                if (ch == 6)//Read contacts from the CSV File, then clear data in the file
+                {
+                    ReadFromCSVFile();
+                    Console.WriteLine("Data read successfully");
+                    ClearDataCSV();
+                }
+                if (ch == 7)//Write Contacts from a specified addressbook into a Json File
+                {
+                    Console.WriteLine("Enter the Address Book Name which needs to be written");
+                    string name = Console.ReadLine();
+                    if (dict.ContainsKey(name))
+                    {
+                        WriteIntoJSONFile(dict, name);
+                        Console.WriteLine("Data inserted successfully");
+
+                    }
+                    else
+                    {
+                        Console.WriteLine("Book Name Not Found");
+                    }
+
+                }
+                if (ch == 8)//Read Contacts from the Json file and display on console, then clear data in the file
+                {
+                    ReadFromJSONFile();
+                    Console.WriteLine("Data read successfully");
+                    JsonClearData();
+                }
 
             }
         }
+        /// <summary>
+        /// Write into CSV File
+        /// </summary>
+        /// <param name="dictionary"></param>
+        /// <param name="bookName"></param>
+        public static void WriteIntoCSVFile(Dictionary<string, List<Contact>> dictionary, string bookName)
+        {
+            string filePathCSV = @"C:\Users\rathi\source\repos_two\AddressBook\AddressBook\CSVExample.csv";
+            foreach (KeyValuePair<string, List<Contact>> kv in dictionary)
+            {
+                string bookpath = kv.Key;
+                List<Contact> contacts = kv.Value;
+
+                if (bookpath.Equals(bookName))
+                {
+                    using (StreamWriter stw = new StreamWriter(filePathCSV))
+                    {
+                        using (CsvWriter writer = new CsvWriter(stw, CultureInfo.InvariantCulture))
+                        {
+                            writer.WriteRecords<Contact>(contacts);
+                        }
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// Read from the CSV File
+        /// </summary>
+        public static void ReadFromCSVFile()
+        {
+            string filePathCSV = @"C:\Users\rathi\source\repos_two\AddressBook\AddressBook\CSVExample.csv";
+            Console.WriteLine("Reading from CSV File");
+
+            using (StreamReader str = new StreamReader(filePathCSV))
+            {
+                using (CsvReader reader = new CsvReader(str, CultureInfo.InvariantCulture))
+                {
+                    var records = reader.GetRecords<Contact>().ToList();
+
+                    foreach (Contact c in records)
+                    {
+                        Console.WriteLine(c);
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// Clear the CSV File
+        /// </summary>
+        public static void ClearDataCSV()
+        {
+            string filePathCSV = @"C:\Users\rathi\source\repos_two\AddressBook\AddressBook\CSVExample.csv";
+
+            File.WriteAllText(filePathCSV, string.Empty);
+        }
+        /// <summary>
+        /// Write into JSON File
+        /// </summary>
+        /// <param name="dictionary"></param>
+        /// <param name="bookName"></param>
+        public static void WriteIntoJSONFile(Dictionary<string, List<Contact>> dictionary, string bookName)
+        {
+            string filePathJSON = @"C:\Users\rathi\source\repos_two\AddressBook\AddressBook\AddressBookJSON.json";
+
+            Console.WriteLine("Writing Data into JSON File");
+
+            foreach (KeyValuePair<string, List<Contact>> kv in dictionary)
+            {
+                string book = kv.Key;
+                List<Contact> contacts = kv.Value;
+
+                if (book.Equals(bookName))
+                {
+                    JsonSerializer jsonSerializer = new JsonSerializer();
+
+                    using (StreamWriter stw = new StreamWriter(filePathJSON))
+                    {
+                        jsonSerializer.Serialize(stw, contacts);
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// Read data from the JSON File
+        /// </summary>
+        public static void ReadFromJSONFile()
+        {
+            Console.WriteLine("Reading Data from JSON File");
+            string filePathJSON = @"C:\Users\rathi\source\repos_two\AddressBook\AddressBook\AddressBookJSON.json";
+            IList<Contact> records = JsonConvert.DeserializeObject<IList<Contact>>(File.ReadAllText(filePathJSON));
+
+            foreach (Contact record in records)
+            {
+                Console.WriteLine(record);
+            }
+        }
+        /// <summary>
+        /// Clear the data present in the JSON File
+        /// </summary>
+        public static void JsonClearData()
+        {
+            string filePathJSON = @"C:\Users\rathi\source\repos_two\AddressBook\AddressBook\AddressBookJSON.json";
+            File.WriteAllText(filePathJSON, string.Empty);
+        }
+        /// <summary>
+        /// Do modifications on the addressBook
+        /// </summary>
+        /// <param name="clist"></param>
         public void addContact(List<Contact> clist) //To add to exisiting book
         {
             int choice_one = 0;
-            while (choice_one != 5)//Iterate till the user exits by inputting choice 5
+            while (choice_one != 10)//Iterate till the user exits by inputting choice 5
             {
                 Console.WriteLine("Enter your choice");
                 Console.WriteLine("1. Enter the contact");
@@ -55,7 +264,10 @@ namespace AddressBook
                 Console.WriteLine("4. Delete a contact");
                 Console.WriteLine("5. Enter the city to display contacts living in it");
                 Console.WriteLine("6. Display contacts city wise");
-                Console.WriteLine("7. Exit");
+                Console.WriteLine("7. Display sorted contacts city wise");
+                Console.WriteLine("8. Display sorted contacts state wise");
+                Console.WriteLine("9. Display sorted contacts zip wise");
+                Console.WriteLine("10. Exit");
                 choice_one = Convert.ToInt32(Console.ReadLine());
 
                 switch (choice_one)
@@ -68,10 +280,23 @@ namespace AddressBook
                         fname = Console.ReadLine();
                         Console.WriteLine("Enter the last name");
                         lname = Console.ReadLine();
+                        Console.WriteLine("Enter the address");
+                        address = Console.ReadLine();
+                        Console.WriteLine("Enter the city");
+                        city = Console.ReadLine();
+                        Console.WriteLine("Enter the state");
+                        state = Console.ReadLine();
+                        Console.WriteLine("Enter the zip code");
+                        zip = Convert.ToInt64(Console.ReadLine());
+                        Console.WriteLine("Enter the phone number");
+                        phoneNumber = Convert.ToInt64(Console.ReadLine());
+                        Console.WriteLine("Enter the EmailId");
+                        email = Console.ReadLine();
+                        Contact contact = new Contact(fname, lname, address, city, state, zip, phoneNumber, email);
                         int flags = 0;
                         foreach (Contact ct in clist)
                         {
-                            if (ct.getFname().ToLower().Equals(fname.ToLower()) && ct.getLname().ToLower().Equals(lname.ToLower()))
+                            if (ct.Equals(contact))
                             {
                                 Console.WriteLine("Entry of this name is already present. Please enter a new Name");
                                 flags = 1;
@@ -80,30 +305,19 @@ namespace AddressBook
                         }
                         if (flags == 0)
                         {
-                            Console.WriteLine("Enter the address");
-                            address = Console.ReadLine();
-                            Console.WriteLine("Enter the city");
-                            city = Console.ReadLine();
-                            Console.WriteLine("Enter the state");
-                            state = Console.ReadLine();
-                            Console.WriteLine("Enter the zip code");
-                            zip = Convert.ToInt64(Console.ReadLine());
-                            Console.WriteLine("Enter the phone number");
-                            phoneNumber = Convert.ToInt64(Console.ReadLine());
-                            Console.WriteLine("Enter the EmailId");
-                            email = Console.ReadLine();
-                            Contact contact = new Contact(fname, lname, address, city, state, zip, phoneNumber, email);
-                            Console.WriteLine("Contact Added Successfully");
                             clist.Add(contact);//Add new contact obj to the list passed in the method
+                            Console.WriteLine("Contact Added Successfully");
                         }
                         break;
 
-                    case 2: //To display all contacts
-                        foreach (Contact o in clist)
+                    case 2: //To display all contacts sorted by person's name
+                        var sortedList = clist.OrderBy(si => si.fname).ToList();
+                        foreach (Contact o in sortedList)
                         {
-                            Console.WriteLine(o.toString());
+                            Console.WriteLine(o);
                         }
                         break;//Print the contacts
+
 
                     case 3:
                         Console.WriteLine("Enter the name of the contact to edit");//To edit the contact in the list
@@ -112,7 +326,7 @@ namespace AddressBook
                         long phNo, zp;
                         foreach (Contact obj in clist)
                         {
-                            if (obj.getFname().Equals(name))
+                            if (obj.fname.Equals(name))
                             {
                                 int choice = 0;
                                 Console.WriteLine("Enter the choice to change");
@@ -129,7 +343,7 @@ namespace AddressBook
                                 {
                                     Console.WriteLine("Enter the new First name");
                                     f_name = Console.ReadLine();
-                                    obj.setFname(f_name);//Set new value to the attributes of the object
+                                    obj.fname = f_name;//Set new value to the attributes of the object
 
 
                                 }
@@ -137,49 +351,49 @@ namespace AddressBook
                                 {
                                     Console.WriteLine("Enter the new Last name");
                                     l_name = Console.ReadLine();
-                                    obj.setLname(l_name);
+                                    obj.lname = l_name;
 
                                 }
                                 if (choice == 3)
                                 {
                                     Console.WriteLine("Enter the address");
                                     adrs = Console.ReadLine();
-                                    obj.setAdd(adrs);
+                                    obj.address = adrs; ;
 
                                 }
                                 if (choice == 4)
                                 {
                                     Console.WriteLine("Enter the new City");
                                     cty = Console.ReadLine();
-                                    obj.setCity(cty);
+                                    obj.city = cty;
 
                                 }
                                 if (choice == 5)
                                 {
                                     Console.WriteLine("Enter the new State");
                                     st = Console.ReadLine();
-                                    obj.setState(st);
+                                    obj.state = st;
 
                                 }
                                 if (choice == 6)
                                 {
                                     Console.WriteLine("Enter the new Zip code");
                                     zp = Convert.ToInt64(Console.ReadLine());
-                                    obj.setZip(zp);
+                                    obj.zip = zp;
 
                                 }
                                 if (choice == 7)
                                 {
                                     Console.WriteLine("Enter the new Phone Number");
                                     phNo = Convert.ToInt64(Console.ReadLine());
-                                    obj.setPhoneNo(phNo);
+                                    obj.phoneNo = phNo;
 
                                 }
                                 if (choice == 8)
                                 {
                                     Console.WriteLine("Enter the new EmailId");
                                     emailId = Console.ReadLine();
-                                    obj.setEmailId(emailId);
+                                    obj.emailId = emailId;
 
                                 }
 
@@ -194,7 +408,7 @@ namespace AddressBook
                         List<Contact> Li = new List<Contact>();
                         foreach (Contact obj in clist)
                         {
-                            if (obj.getFname().Equals(delname))
+                            if (obj.fname.Equals(delname))
                             {
                                 flag = true;
                                 Li.Add(obj);//Add the contact you want to delete in a list
@@ -214,9 +428,9 @@ namespace AddressBook
                         citi = Console.ReadLine();
                         foreach (Contact c in clist)
                         {
-                            if (c.getCity().ToLower().Equals(citi.ToLower()))
+                            if (c.city.ToLower().Equals(citi.ToLower()))
                             {
-                                Console.WriteLine(c.getFname() + " " + c.getLname());
+                                Console.WriteLine(c.fname + " " + c.lname);
                             }
                         }
                         break;
@@ -226,16 +440,16 @@ namespace AddressBook
                         HashSet<string> states = new HashSet<string>();
                         foreach (Contact p in clist)
                         {
-                            states.Add(p.getState());
+                            states.Add(p.state);
                         }
                         foreach (string s in states)
                         {
                             List<string> temp = new List<string>();
                             foreach (Contact c in clist)
                             {
-                                if (s.ToLower().Equals(c.getState()))
+                                if (s.ToLower().Equals(c.state))
                                 {
-                                    temp.Add(c.getFname() + " " + c.getLname());
+                                    temp.Add(c.fname + " " + c.lname);
                                 }
                             }
                             int count = temp.Count;
@@ -248,6 +462,34 @@ namespace AddressBook
                         break;
 
                     case 7:
+                        Contact ctr = new Contact();
+                        ctr.SortByCity(clist);
+
+                        foreach (Contact c in clist)
+                        {
+                            Console.WriteLine(c);
+                        }
+                        break;//Print 
+                    case 8:
+                        Contact cts = new Contact();
+                        cts.SortByState(clist);
+
+                        foreach (Contact c in clist)
+                        {
+                            Console.WriteLine(c);
+                        }
+                        break;
+                    case 9:
+                        Contact ctd = new Contact();
+                        ctd.SortByZip(clist);
+
+                        foreach (Contact c in clist)
+                        {
+                            Console.WriteLine(c);
+                        }
+                        break;
+
+                    case 10:
                         Console.WriteLine("Exiting....");
                         break;
 
