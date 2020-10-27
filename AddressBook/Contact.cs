@@ -10,13 +10,13 @@ namespace AddressBook
 
         public string fname { get; set; }
         public string lname { get; set; }
-    public string address { get; set; }
-    public string city { get; set; }
-    public string state { get; set; }
-    public long zip { get; set; }
-    public long phoneNo { get; set; }
-    public string emailId { get; set; }
-    public readonly int n;
+        public string address { get; set; }
+        public string city { get; set; }
+        public string state { get; set; }
+        public long zip { get; set; }
+        public long phoneNo { get; set; }
+        public string emailId { get; set; }
+        public readonly int n;
 
         public Contact(string fname, string lname, string address, string city, string state, long zip, long phoneNo, string emailId)
         {

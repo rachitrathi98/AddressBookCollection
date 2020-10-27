@@ -25,8 +25,8 @@ namespace AddressBook
                 Console.WriteLine("2. Add, edit or delete contacts in an exisiting address Book");
                 Console.WriteLine("3. Write contacts to a file");
                 Console.WriteLine("4. Read contacts from a file");
-                Console.WriteLine("5. Write contacts to csv file");
-                Console.WriteLine("6. Read contacts from a csv file");
+                Console.WriteLine("5. Write contacts to CSV file");
+                Console.WriteLine("6. Read contacts from a CSV file");
                 Console.WriteLine("7. Write contacts to a JSON File");
                 Console.WriteLine("8. Read contacts from a JSON file");
 
