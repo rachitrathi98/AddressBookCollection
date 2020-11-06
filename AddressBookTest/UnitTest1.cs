@@ -33,6 +33,18 @@ namespace AddressBookTest
             Assert.AreEqual(expected.B_Type, actual.B_Type);
 
         }
+        /// <summary>
+        /// UC17 
+        /// </summary>
+        [TestMethod]
+        public void CompareUpdatedDataFromDB()
+        {
+            string expected = "Karnataka";
+
+            string actual = AddressBookRepoDB.UpdateDetailsInDB();
+
+            Assert.AreEqual(expected, actual);
+        }
 
     }
 }
