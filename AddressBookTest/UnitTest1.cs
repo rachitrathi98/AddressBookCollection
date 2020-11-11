@@ -103,7 +103,5 @@ namespace AddressBookTest
             bool actual = addressBookRepoDB.AddContactDetailsInDBusingThread(contactList);
             Assert.AreEqual(expected, actual);
         }
-
-
         }
 }

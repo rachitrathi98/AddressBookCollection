@@ -204,7 +204,6 @@ namespace AddressBook
                         Console.WriteLine("Contact Not Added");
                     }
 
-
                 });
                 thread.Start();
                 thread.Join();
