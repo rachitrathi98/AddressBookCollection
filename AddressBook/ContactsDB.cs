@@ -46,6 +46,11 @@ namespace AddressBook
             set;
             get;
         }
+        public DateTime Date
+        {
+            set;
+            get;
+        }
         public string B_ID
         {
             get;

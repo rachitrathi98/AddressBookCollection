@@ -1,5 +1,6 @@
 using AddressBook;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 namespace AddressBookTest
 {
@@ -56,6 +57,25 @@ namespace AddressBookTest
             string actual = AddressBookRepoDB.GetDateBetweenRange();
 
             Assert.AreEqual(expected, actual);
+        }
+        [TestMethod]
+        public void AddContact()
+        {
+            ContactsDB contactDetails = new ContactsDB();
+            contactDetails.first_name = "Rakesh";
+            contactDetails.last_name = "Sharma";
+            //contactDetails.address = "Khar";
+            //contactDetails.city = "Mumbai";
+            //contactDetails.state = "Maharashtra";
+            //contactDetails.zip = 400058;
+            //contactDetails.phone = "989879876";
+            //contactDetails.email = "rakesh@gmail.com";
+            //contactDetails.Date = DateTime.Parse("2019-06-10");
+            contactDetails.B_Name = "Book4";
+            contactDetails.B_Type = "Family";
+            contactDetails.B_ID = "BK4";
+            AddressBookRepoDB addressBookRepoDB = new AddressBookRepoDB();
+            Console.WriteLine(addressBookRepoDB.AddContactDetailsInDB(contactDetails) ? "Contact added successfully" : "Contact was not added");
         }
 
 

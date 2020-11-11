@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 
@@ -138,6 +139,43 @@ namespace AddressBook
             {
                 Console.WriteLine(e.Message);
                 return Combine_Name;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+        public bool AddContactDetailsInDB(ContactsDB model)
+        {
+            try
+            {
+                using (connection)
+                {
+                    connection = new SqlConnection(connectionString);
+                    SqlCommand command = new SqlCommand("InsertIntoMultipleTables", connection);
+                    connection.Open();
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@BookID", model.B_ID);
+                    command.Parameters.AddWithValue("@BookName", model.B_Name);
+                    command.Parameters.AddWithValue("@BookType", model.B_Type);
+                    command.Parameters.AddWithValue("@FirstName", model.first_name);
+                    command.Parameters.AddWithValue("@LastName", model.last_name);
+           
+                    var result = command.ExecuteNonQuery();
+                    //this.connection.Close();
+                    if (result != 0)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                connection.Close();
+                return false;
             }
             finally
             {
