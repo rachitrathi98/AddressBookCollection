@@ -45,6 +45,19 @@ namespace AddressBookTest
 
             Assert.AreEqual(expected, actual);
         }
+        /// <summary>
+        /// UC18 
+        /// </summary>
+        [TestMethod]
+        public void GetDateBetweenRangeNow()
+        {
+            string expected = "RachitTanmayAkhil";
+
+            string actual = AddressBookRepoDB.GetDateBetweenRange();
+
+            Assert.AreEqual(expected, actual);
+        }
+
 
     }
 }

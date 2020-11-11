@@ -104,5 +104,45 @@ namespace AddressBook
                 connection.Close();
             }
         }
+        public static string GetDateBetweenRange()
+        {
+            string First_Name = "";
+            string Combine_Name = "";
+            try
+            {
+                connection = new SqlConnection(connectionString);
+                string query = "select * from Contacts where SDate between cast('2020-01-01' as date) and cast('2020-01-08' as date)";
+
+                SqlCommand command = new SqlCommand(query, connection);
+                connection.Open();
+
+                SqlDataReader reader = command.ExecuteReader();
+
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        First_Name = reader.GetString(0);
+                        Combine_Name = Combine_Name+First_Name;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Row isn't updated");
+                }
+                reader.Close();
+                return Combine_Name;
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return Combine_Name;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
     }
 }
