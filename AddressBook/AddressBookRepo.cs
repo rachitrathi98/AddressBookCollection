@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Text;
+using System.Threading;
 
 namespace AddressBook
 {
@@ -181,6 +183,35 @@ namespace AddressBook
             {
                 connection.Close();
             }
+        }
+        public bool AddContactDetailsInDBusingThread(List<ContactsDB> contactDetails)
+        {
+            ///In this we are passing a list and for each contact in the list different thread is being vrear
+            foreach (var contact in contactDetails)
+            {
+                Stopwatch s = new Stopwatch();
+                s.Start();
+                Thread thread = new Thread(() =>
+                {
+                    Console.WriteLine("Thread: " + Thread.CurrentThread.ManagedThreadId);
+                    Console.WriteLine($"Contact added:{contact.first_name} {contact.last_name}");
+                    if (AddContactDetailsInDB(contact))
+                    {
+                        Console.WriteLine("Contact Successfully Added");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Contact Not Added");
+                    }
+
+
+                });
+                thread.Start();
+                thread.Join();
+            }
+            s.Stop();
+            Console.WriteLine("Elapsed time to add contacts:" + s.ElapsedMilliseconds);
+
         }
     }
 }

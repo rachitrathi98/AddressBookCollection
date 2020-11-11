@@ -1,6 +1,7 @@
 using AddressBook;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 
 namespace AddressBookTest
 {
@@ -61,6 +62,7 @@ namespace AddressBookTest
         [TestMethod]
         public void AddContact()
         {
+            bool expected = true;
             ContactsDB contactDetails = new ContactsDB();
             contactDetails.first_name = "Rakesh";
             contactDetails.last_name = "Sharma";
@@ -75,9 +77,33 @@ namespace AddressBookTest
             contactDetails.B_Type = "Family";
             contactDetails.B_ID = "BK4";
             AddressBookRepoDB addressBookRepoDB = new AddressBookRepoDB();
-            Console.WriteLine(addressBookRepoDB.AddContactDetailsInDB(contactDetails) ? "Contact added successfully" : "Contact was not added");
+            bool actual = addressBookRepoDB.AddContactDetailsInDB(contactDetails);
+            Assert.AreEqual(expected, actual);
+        }
+        [TestMethod]
+        public void AddMultipleContactUsingThred()
+        {
+            bool expected = true;
+            ContactsDB contactDetails = new ContactsDB();
+            contactDetails.first_name = "Rakesh";
+            contactDetails.last_name = "Sharma";
+            contactDetails.B_Name = "Book4";
+            contactDetails.B_Type = "Family";
+            contactDetails.B_ID = "BK4";
+            ContactsDB contactsDB = new ContactsDB();
+            contactsDB.first_name = "Rahul";
+            contactsDB.last_name = "Singh";
+            contactsDB.B_Name = "Book5";
+            contactsDB.B_Type = "Friends";
+            contactsDB.B_ID = "BK5";
+            List<ContactsDB> contactList = new List<ContactsDB>();
+            contactList.Add(contactDetails);
+            contactList.Add(contactsDB);
+            AddressBookRepoDB addressBookRepoDB = new AddressBookRepoDB();
+            bool actual = addressBookRepoDB.AddContactDetailsInDBusingThread(contactList);
+            Assert.AreEqual(expected, actual);
         }
 
 
-    }
+        }
 }
